@@ -28,23 +28,11 @@ jobs:
       - name: Extract Android project
         run: unzip -o TransportesFerreiraGPS-v0.3.zip
 
-      - name: Force Java 17 in Android project
-        run: |
-          cat >> TransportesFerreiraGPS/app/build.gradle.kts <<'EOF'
-
-          android {
-              compileOptions {
-                  sourceCompatibility = JavaVersion.VERSION_17
-                  targetCompatibility = JavaVersion.VERSION_17
-              }
-          }
-          EOF
-
       - name: Build APK
         run: gradle -p TransportesFerreiraGPS assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Transportes-Ferreira-GPS
+          name: Transportes-Ferreira-GPS-v0.3
           path: TransportesFerreiraGPS/app/build/outputs/apk/debug/app-debug.apk

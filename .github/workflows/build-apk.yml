@@ -28,6 +28,22 @@ jobs:
       - name: Extract Android project
         run: unzip -o TransportesFerreiraGPS-v0.2.zip
 
+      - name: Fix Java compatibility
+        run: |
+          python3 - <<'PY'
+          p = "TransportesFerreiraGPS/app/build.gradle.kts"
+          s = open(p).read()
+          s = s.replace(
+              "sourceCompatibility = JavaVersion.VERSION_1_8",
+              "sourceCompatibility = JavaVersion.VERSION_17"
+          )
+          s = s.replace(
+              "targetCompatibility = JavaVersion.VERSION_1_8",
+              "targetCompatibility = JavaVersion.VERSION_17"
+          )
+          open(p, "w").write(s)
+          PY
+
       - name: Build APK
         run: gradle -p TransportesFerreiraGPS assembleDebug
 

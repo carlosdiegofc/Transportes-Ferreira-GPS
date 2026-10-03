@@ -35,14 +35,23 @@ object Sync {
                     .put("updated_at",java.time.Instant.now().toString())
                 api.json("/rest/v1/trf_driver_locations?on_conflict=driver_id",loc,"resolution=merge-duplicates")
             }
-            for((file,r) in store.receipts().filter{it.second.optString("driver_id")==uid&&!it.second.optBoolean("synced")}){
-                val photo=File(r.getString("local_path"))
-                try{api.request("/storage/v1/object/trf-fuel-receipts/${r.getString("object_path")}","POST",photo.readBytes(),contentType="image/jpeg")}
-                catch(e:ApiError){if(e.status!=409 && !(e.status==400 && e.response.contains("Duplicate")))throw e}
-                val body=JSONObject(r.toString());body.remove("local_path");body.remove("synced")
-                api.json("/rest/v1/trf_driver_fuel_receipts?on_conflict=id",body,"resolution=ignore-duplicates")
-                store.markReceiptSynced(file,r)
+            for((file,r) in store.details().filter{it.second.optString("driver_id")==uid&&!it.second.optBoolean("synced")}){
+                val body=JSONObject(r.toString());body.remove("synced")
+                api.json("/rest/v1/trf_trip_details?on_conflict=trip_id",body,"resolution=ignore-duplicates");store.markSynced(file,r)
             }
+            fun upload(records:List<Pair<File,JSONObject>>,table:String,bucket:String){
+                for((file,r) in records.filter{it.second.optString("driver_id")==uid&&!it.second.optBoolean("synced")}){
+                    if(!r.isNull("object_path")){
+                        val photo=File(r.getString("local_path"))
+                        try{api.request("/storage/v1/object/$bucket/${r.getString("object_path")}","POST",photo.readBytes(),contentType="image/jpeg")}
+                        catch(e:ApiError){if(e.status!=409 && !(e.status==400 && e.response.contains("Duplicate")))throw e}
+                    }
+                    val body=JSONObject(r.toString());body.remove("local_path");body.remove("synced")
+                    api.json("/rest/v1/$table?on_conflict=id",body,"resolution=ignore-duplicates");store.markSynced(file,r)
+                }
+            }
+            upload(store.receipts(),"trf_driver_fuel_receipts","trf-fuel-receipts")
+            upload(store.documents(),"trf_trip_documents","trf-trip-documents")
             for((file,p) in store.points().filter{it.second.optString("driver_id")==uid}.take(250)){
                 api.json("/rest/v1/trf_driver_location_history?on_conflict=event_id",p,"resolution=ignore-duplicates")
                 file.delete()

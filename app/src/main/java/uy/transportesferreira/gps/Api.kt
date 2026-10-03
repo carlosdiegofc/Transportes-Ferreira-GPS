@@ -44,6 +44,8 @@ class Api(private val context: Context) {
         if(previous!=null && (previous.optBoolean("active") || store.pendingCount()>0)) {
             check(previous.getString("driver_id")==s.getJSONObject("user").getString("id")) { "Usá la cuenta del viaje pendiente" }
         }
+        val nextUid=s.getJSONObject("user").getString("id")
+        check((store.receipts()+store.documents()+store.details()).none{!it.second.optBoolean("synced")&&it.second.optString("driver_id")!=nextUid}) { "Sincronizá los registros de la otra cuenta primero" }
         save(s)
         context.getSharedPreferences("gps", Context.MODE_PRIVATE).edit().remove("password").putString("email",email).apply()
     }

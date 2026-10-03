@@ -1,6 +1,13 @@
-# Transportes Ferreira GPS — v0.7
+# Transportes Ferreira GPS — v0.8
 
-## Qué cambia
+## Qué cambia en v0.8
+- Ningún campo del formulario bloquea el inicio del viaje: camión, destino, cliente, carga, kilos y remitos son opcionales. Sin permiso GPS se guarda el viaje y se puede activar la ubicación después.
+- Remitos de salida y llegada: número, foto de cámara/galería y datos opcionales. Se pueden agregar varios antes, durante o después del viaje.
+- Historial propio por chofer, aunque cambie de camión; mapa del recorrido registrado, origen y llegada GPS. Destino previsto opcional con búsqueda.
+- Combustible dentro o fuera del viaje: fecha y estación, litros y total opcionales, foto opcional. La estación es obligatoria al guardar combustible, nunca para iniciar un viaje.
+- Catálogos de clientes, cargas y estaciones desde el panel. Los cambios completados en la web se consultan al actualizar el historial.
+
+## Funciones conservadas
 - Login con correo y contraseña. Sesión cifrada con Android Keystore; no guarda la contraseña.
 - Inicio con nombre del chofer, selección del camión y viaje con carga o sin carga / retorno vacío.
 - Pantalla del viaje con kilómetros GPS, pausar/reanudar, finalizar y adjuntar boletas.
@@ -15,15 +22,15 @@ Abrí esta carpeta en Android Studio, sincronizá Gradle y compilá con Java 17 
 
 Para actualizar la app que ya está instalada, compilá con la MISMA firma/keystore que utilizaste para instalarla. El APK de prueba adjunto usa una firma de desarrollo de este entorno; Android puede rechazarlo como actualización si la firma anterior es distinta. No desinstales la app anterior para resolver esto si tiene boletas pendientes: usá la firma anterior.
 
-`APK/TransportesFerreiraGPS-v0.7-prueba.apk` es el APK compilado de prueba, Android 8 o posterior. Para distribución definitiva usá tu propia firma de publicación. No se incluye una clave privada de firma en este proyecto.
+`APK/TransportesFerreiraGPS-v0.8-prueba.apk` es el APK compilado de prueba, Android 8 o posterior. Para distribución definitiva usá tu propia firma de publicación. No se incluye una clave privada de firma en este proyecto.
 
 ## Panel
 https://transportes-ferreira-gestion.carlosdiegofc2001.chatgpt.site/
-La base y el panel se actualizaron para recibir las boletas. Las fotos son privadas; se abren con acceso autenticado. Cada boleta conserva un identificador estable del viaje, incluso antes de que este finalice.
+La base y el panel se actualizaron para recibir boletas y múltiples remitos por viaje. Las fotos son privadas; se abren con acceso autenticado. Cada boleta conserva un identificador estable del viaje, incluso antes de que este finalice.
 
 Al finalizar el viaje, aparece en Viajes para completar los datos pendientes. La distancia y la condición sin carga llegan desde la app. Las boletas aparecen en Combustible sin importes inventados ni OCR automático.
 
-Las boletas locales de versiones anteriores a v0.7 no tenían identificador del viaje y no se vinculan automáticamente. Los archivos antiguos no se eliminan durante la actualización.
+Las boletas locales de versiones anteriores a v0.8 no tenían identificador del viaje y no se vinculan automáticamente. Los archivos antiguos no se eliminan durante la actualización.
 
 ## Verificación realizada
 - Compilación Android y APK: correcta.
